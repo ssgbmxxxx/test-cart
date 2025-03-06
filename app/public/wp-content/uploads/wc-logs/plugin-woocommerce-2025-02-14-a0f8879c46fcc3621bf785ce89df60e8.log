@@ -1,0 +1,8 @@
+2025-02-14T03:05:01+00:00 WARNING Failed to get WooCommerce patterns from the PTK: "Failed to connect with the Patterns Toolkit API: try again later."
+2025-02-14T03:05:51+00:00 WARNING Empty patterns received from the PTK Pattern Store
+2025-02-14T09:26:22+00:00 INFO Payment gateway enabled: "Russpay"
+2025-02-14T13:36:45+00:00 INFO Payment gateway enabled: "Russpay"
+2025-02-14T13:55:02+00:00 INFO Payment gateway enabled: "Cash on delivery"
+2025-02-14T13:55:13+00:00 INFO Payment gateway enabled: "Check payments"
+2025-02-14T13:59:14+00:00 INFO Payment gateway enabled: "Russpay"
+2025-02-14T14:08:55+00:00 INFO Payment gateway enabled: "Russpay"

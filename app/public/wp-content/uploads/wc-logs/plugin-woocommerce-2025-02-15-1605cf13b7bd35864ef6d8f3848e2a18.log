@@ -1,0 +1,6 @@
+2025-02-15T02:53:09+00:00 INFO Payment gateway enabled: "Russpay"
+2025-02-15T08:07:26+00:00 INFO Payment gateway enabled: "Russpay"
+2025-02-15T08:09:25+00:00 INFO Payment gateway enabled: "Cash on delivery"
+2025-02-15T08:09:44+00:00 INFO Payment gateway enabled: "Check payments"
+2025-02-15T09:02:52+00:00 WARNING Empty patterns received from the PTK Pattern Store
+2025-02-15T09:03:46+00:00 INFO Payment gateway enabled: "Russpay"
