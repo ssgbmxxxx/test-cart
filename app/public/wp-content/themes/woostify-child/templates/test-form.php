@@ -11,6 +11,7 @@ $product_image = isset($_GET['product_image']) ? wp_get_attachment_url($_GET['pr
 <!-- 显示商品图片 -->
 <div id="primary" class="content-area">
     <main id="main" class="site-main">
+        <div id="product_info" data-id="<?php echo $product_id; ?>"></div>
         <div>
             <h3 id="product-name"><?php echo $product_name; ?></h3>
             <p id="product-id"><?php echo $product_id; ?></h3>
@@ -27,7 +28,7 @@ $product_image = isset($_GET['product_image']) ? wp_get_attachment_url($_GET['pr
             <input type="text" name="custom_attribute2" placeholder="输入自定义属性值">
             <label for="custom_attribute2">coat 30$</label>
 
-            <button class="single_add_to_cart_button button alt" name="add-to-cart" id="addToCardButton">加购</button>
+            <button name="add-to-cart" id="addToCardButton">加购</button>
         </div>
     </main>
 </div>
