@@ -74,14 +74,14 @@ function custom_add_to_cart_handler() {
             $cart_count = WC()->cart->get_cart_contents_count();
 
             // 更新购物车中商品的价格
-            foreach (WC()->cart->get_cart() as $cart_item_key => $cart_item) {
-                if (isset($cart_item['total_custom_price'])) {
-                    $product = $cart_item['data'];
-                    $original_price = $product->get_price();
-                    $new_price = $original_price + $cart_item['total_custom_price'];
-                    $product->set_price($new_price);
-                }
-            }
+            // foreach (WC()->cart->get_cart() as $cart_item_key => $cart_item) {
+            //     if (isset($cart_item['total_custom_price'])) {
+            //         $product = $cart_item['data'];
+            //         $original_price = $product->get_price();
+            //         $new_price = $original_price + $cart_item['total_custom_price'];
+            //         $product->set_price($new_price);
+            //     }
+            // }
 
             // 重新计算购物车总价
             WC()->cart->calculate_totals();
@@ -123,25 +123,35 @@ function custom_add_to_cart_handler() {
 }
 
 //当商品添加到购物车时保存自定义属性
-// add_filter( 'woocommerce_add_cart_item_data', 'save_custom_product_attributes', 10, 2 );
-// function save_custom_product_attributes( $cart_item_data, $product_id ) {
-//     // Assuming $message is defined globally
-//     if ( isset( $_POST['custom_attribute'] ) ) {
-//         $cart_item_data['custom_attribute'] = sanitize_text_field( $_POST['custom_attribute'] );
-//         $cart_item_data['unique_key'] = md5( microtime().rand() );
-//     }
-//     global $message;
-//     error_log($message . "$cart_item_data: " . print_r($cart_item_data, true));
+add_filter( 'woocommerce_add_cart_item_data', 'save_custom_product_attributes', 10, 2 );
+function save_custom_product_attributes( $cart_item_data, $product_id ) {
+    $custom_attribute = isset($_POST['custom_attribute']) ? $_POST['custom_attribute'] : array();
+    if( isset($custom_attribute)){
+        // 对自定义数据进行处理和清理
+        $clean_custom_attr = array();
+        foreach ($custom_attribute as $n => $attr_info) {
+            $clean_custom_attr[$n] = array(
+                'name' => sanitize_text_field($attr_info['name']),
+                'value' => sanitize_text_field($attr_info['value']),
+                'price' => floatval($attr_info['price'])
+            );
+        }
 
-//     return $cart_item_data;
-// }
+        $cart_item_data['custom_attribute'] = $clean_custom_attr;
+        // 为每个商品项设置唯一的键，确保自定义属性被正确保存
+        $cart_item_data['unique_key'] = md5(microtime(). rand());
+    }
+
+    return $cart_item_data;
+}
 
 
 // 在购物车中显示自定义属性和价格
 add_filter( 'woocommerce_get_item_data', 'display_custom_product_attributes_in_cart', 10, 2 );
 function display_custom_product_attributes_in_cart( $item_data, $cart_item ) {
-    if ( isset( $cart_item['custom_attribute'] ) ) {
-        foreach( $cart_item['custom_attribute'] as $attr ) {
+    $custom_attribute = $cart_item['custom_attribute'];
+    if ( isset( $custom_attribute ) ) {
+        foreach( $custom_attribute as $attr ) {
             $item_data[] = array(
                 'name' => $attr['name'].": ".$attr['value'],
                 'value' => wc_price($attr['price']),
@@ -152,23 +162,23 @@ function display_custom_product_attributes_in_cart( $item_data, $cart_item ) {
 }
 
 // 更新购物车项的价格
-// add_action( 'woocommerce_before_calculate_totals', 'update_cart_item_price', 10, 1 );
-// function update_cart_item_price( $cart ) {
-//     if ( is_admin() &&! defined( 'DOING_AJAX' ) ) {
-//         return;
-//     }
+add_action( 'woocommerce_before_calculate_totals', 'update_cart_item_price', 10, 1 );
+function update_cart_item_price( $cart ) {
+    if ( is_admin() &&! defined( 'DOING_AJAX' ) ) {
+        return;
+    }
 
-//     foreach ( $cart->get_cart() as $cart_item ) {
-//         if ( isset( $cart_item['custom_attribute'] ) ) {
-//             $base_price = $cart_item['data']->get_price();
-//             $extra_price = 0;
-//             // 加所有自定义属性的价格到额外价格中
-//             foreach ( $cart_item['custom_attribute'] as $attribute_data ) {
-//                 $extra_price += $attribute_data['price'];
-//             }
-//             $new_price = $base_price + $extra_price;
-//             $cart_item['data']->set_price( $new_price );
-//         }
-//     }
-// }
+    foreach ( $cart->get_cart() as $cart_item ) {
+        if ( isset( $cart_item['custom_attribute'] ) ) {
+            $base_price = $cart_item['data']->get_price();
+            $extra_price = 0;
+            // 加所有自定义属性的价格到额外价格中
+            foreach ( $cart_item['custom_attribute'] as $attribute_data ) {
+                $extra_price += $attribute_data['price'];
+            }
+            $new_price = $base_price + $extra_price;
+            $cart_item['data']->set_price( $new_price );
+        }
+    }
+}
 
